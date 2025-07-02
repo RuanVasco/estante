@@ -19,6 +19,9 @@
       ],
       "@styles/*": [
         "Styles/*"
+      ],
+      "@contexts/*": [
+        "Contexts/*"
       ]
     }
   }
