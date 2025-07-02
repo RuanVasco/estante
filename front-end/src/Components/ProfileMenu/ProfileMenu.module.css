@@ -6,6 +6,21 @@
     border: 1px solid #ccc;
     border-radius: 6px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 0.5rem;
+    padding: 1.5rem;
     z-index: 999;
+}
+
+.link {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.toggleButton {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0;
 }
