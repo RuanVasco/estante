@@ -1,3 +1,4 @@
+import LoginForm from '../Forms/LoginForm/LoginForm';
 import styles from './ProfileMenu.module.css';
 import { useAuth } from '@contexts/AuthContext';
 
@@ -17,12 +18,7 @@ const ProfileMenu = () => {
                 </div>
 
             ) : (
-                <div>
-                    Logar
-                    <input type="email" placeholder="E-mail" />
-                    <input type="password" placeholder="Senha" />
-                    <button className="btn btn-secondary">Logar</button>
-                </div>
+                <LoginForm />
             )}
         </div>
     );

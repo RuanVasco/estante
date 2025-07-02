@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Logo from "../Logo/Logo";
 import ProfileIcon from "../ProfileIcon/ProfileIcon";
 import SearchBar from "../SearchBar/SearchBar";
@@ -6,9 +6,31 @@ import styles from './Header.module.css';
 import ProfileMenu from "../ProfileMenu/ProfileMenu";
 
 const Header = () => {
-    const [menuOpen, setMenuOpen] = useState<boolean>(false);
-    
-    const toggleMenu = () => setMenuOpen(prev => !prev);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    const toggleMenu = () => setMenuOpen((prev) => !prev);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(event.target as Node)
+            ) {
+                setMenuOpen(false);
+            }
+        };
+
+        if (menuOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [menuOpen]);
 
     return (
         <header className={styles.header}>
@@ -18,7 +40,10 @@ const Header = () => {
                         <Logo />
                         <SearchBar placeholder="Pesquisar" />
                     </div>
-                    <div className="col d-flex align-items-center justify-content-end position-relative">
+                    <div
+                        className="col d-flex align-items-center justify-content-end position-relative"
+                        ref={menuRef}
+                    >
                         <div onClick={toggleMenu}>
                             <ProfileIcon />
                         </div>
@@ -27,7 +52,8 @@ const Header = () => {
                 </div>
             </div>
         </header>
-    )
-}
+    );
+};
+
 
 export default Header;
