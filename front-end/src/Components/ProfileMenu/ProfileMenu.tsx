@@ -2,21 +2,24 @@ import { useState } from 'react';
 import LoginForm from '../Forms/LoginForm/LoginForm';
 import RegisterForm from '../Forms/RegisterForm/RegisterForm';
 import styles from './ProfileMenu.module.css';
-import { useAuth } from '@contexts/AuthContext';
+import { useAuth } from '../../Contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
 const ProfileMenu = () => {
     const [formType, setFormType] = useState<'login' | 'register'>('login');
-    const { isLoggedIn, logout } = useAuth();
+    const { user, isLoggedIn, logout } = useAuth();
 
     return (
         <div className={styles.menu}>
-            {isLoggedIn ? (
+            {(isLoggedIn && user) ? (
                 <>
-                    <ul>
-                        <li><a href="/perfil">Meu Perfil</a></li>
-                        <li><a href="/config">Configurações</a></li>
-                        <li><button onClick={logout}>Sair</button></li>
+                    <span className={styles.name}>{user.name}</span>
+                    <ul className={styles.loggedInMenu}>
+                        <li><Link to="/perfil">Meu Perfil</Link></li>
+                        <li><Link to="/configuracoes">Configurações</Link></li>
+                        <li><Link to="/ajuda">Ajuda</Link></li>
                     </ul>
+                    <button className={styles.logoutButton} onClick={logout}>Sair</button>
                 </>
             ) : (
                 <>

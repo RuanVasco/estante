@@ -1,9 +1,10 @@
+import { Link } from 'react-router-dom';
 import styles from './Logo.module.css';
 
 const Logo = () => {
     return (
-        <div className={styles.logo}>
-            Estante
+        <div>
+            <Link to="/" className={styles.logo}>Estante</Link>
         </div>
     )
 }

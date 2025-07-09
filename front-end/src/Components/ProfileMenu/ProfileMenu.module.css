@@ -24,3 +24,35 @@
     font-weight: bold;
     padding: 0;
 }
+
+.name {
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.loggedInMenu {
+    margin: 1em 0;
+    padding: 0;
+    list-style: none;
+}
+
+.loggedInMenu > li > a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.logoutButton {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: var(--color-primary);
+    font-weight: 600;
+    color: var(--color-dark);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: filter 0.2s ease;
+}
+
+.logoutButton:hover {
+  filter: brightness(0.9);
+}
