@@ -1,11 +1,6 @@
 import { useState } from 'react';
 import styles from './BookForm.module.css';
-
-export interface Book {
-    title: string;
-    isbn: string;
-    publishedYear?: number;
-}
+import type { Book } from '../../../Types/BookType';
 
 const BookForm = () => {
     const [book, setBook] = useState<Book>({

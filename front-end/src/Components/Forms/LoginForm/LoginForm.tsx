@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import styles from './LoginForm.module.css';
 import type { UserType } from '../../../Types/UserType';
-import { api } from '@services/api';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../../Contexts/AuthContext';
+import { api } from '../../../Services/api';
 
 const LoginForm = () => {
     const [userForm, setUserForm] = useState<UserType>({

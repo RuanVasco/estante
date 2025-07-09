@@ -1,6 +1,7 @@
 import { useState } from "react";
 import BookForm from "../../Components/Forms/BookForm/BookForm";
 import Sidebar from "../../Components/Sidebar/Sidebar";
+import AuthorForm from "../../Components/Forms/AuthorForm/AuthorForm";
 
 const NewBook = () => {
     const [item, setItem] = useState<"book" | "author">("book");
@@ -32,7 +33,7 @@ const NewBook = () => {
                     {item === "book" ? (
                         <BookForm />
                     ) : (
-                        <></>
+                        <AuthorForm />
                     )}
                 </div>
             </div>

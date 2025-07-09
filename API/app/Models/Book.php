@@ -5,16 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Book extends Model {
-	protected $fillable = [
-		'title',
-		'author',
-		'isbn',
-		'description',
-		'published_at',
-	];
+    protected $fillable = ['title', 'isbn', 'author_id', 'publisher_id', 'published_year'];
 
-	protected $hidden = [
-		'created_at',
-		'updated_at',
-	];
+    public function author() {
+        return $this->belongsTo(Author::class);
+    }
+
+    public function publisher() {
+        return $this->belongsTo(Publisher::class);
+    }
 }
