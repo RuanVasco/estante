@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styles from './UserItems.module.css';
 
 const UserItems = () => {
@@ -24,21 +25,17 @@ const UserItems = () => {
         console.log(`Remover item ${id}`);
     };
 
-    const handleNewItem = () => {
-        console.log('Anunciar novo item');
-    };
-
     return (
         <div className={styles.userItems}>
             <div className={styles.header}>
-                <h2>Meus Itens Anunciados</h2>
-                <button className={styles.newItemButton} onClick={handleNewItem}>
-                    + Anunciar novo item
-                </button>
+                <h2>Meus Livros Anunciados</h2>
+                <Link className={styles.newItemButton} to="/anunciar">
+                    + Anunciar novo livro
+                </Link>
             </div>
 
             {items.length === 0 ? (
-                <p>Você ainda não anunciou nenhum item.</p>
+                <p>Você ainda não anunciou nenhum livro.</p>
             ) : (
                 <ul className={styles.itemList}>
                     {items.map(item => (

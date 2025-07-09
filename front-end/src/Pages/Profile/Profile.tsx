@@ -23,7 +23,7 @@ const Profile = () => {
                                 className={viewType === "items" ? styles.active : ""}
                                 onClick={() => setViewType("items")}
                             >
-                                Itens anunciados
+                                Livros anunciados
                             </li>
                         </ul>
                     </div>

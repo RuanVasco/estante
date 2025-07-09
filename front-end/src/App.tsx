@@ -4,6 +4,7 @@ import Header from './Components/Header/Header';
 import Home from './Pages/Home/Home';
 import Profile from './Pages/Profile/Profile';
 import PrivateRoute from './Components/PrivateRoute/PrivateRoute';
+import NewItem from './Pages/NewItem/NewItem';
 
 function App() {
 	return (
@@ -14,6 +15,11 @@ function App() {
 				<Route path="/perfil" element={
 					<PrivateRoute>
 						<Profile />
+					</PrivateRoute>}
+				/>
+				<Route path="/anunciar" element={
+					<PrivateRoute>
+						<NewItem />
 					</PrivateRoute>}
 				/>
 			</Routes>
