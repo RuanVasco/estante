@@ -1,44 +1,8 @@
 @import "../../Styles/variables.css";
 
 .profile {
-    margin-top: 90px;
     min-height: 80vh;
     background-color: var(--color-white);
     font-family: var(--font-serif);
-    padding: 2rem;
 }
 
-.sidebar {
-    background-color: white;
-    border-radius: 10px;
-    padding: 2rem;
-    color: var(--color-dark); 
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-}
-
-.sidebar h3 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    font-weight: 600;
-}
-
-.menuList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.menuList li {
-    padding: 10px 12px;
-    margin-bottom: 8px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.3s;
-}
-
-.menuList li:hover,
-.menuList li.active {
-    background-color: var(--color-primary);
-    color: white;
-}

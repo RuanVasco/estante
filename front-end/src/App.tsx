@@ -4,7 +4,8 @@ import Header from './Components/Header/Header';
 import Home from './Pages/Home/Home';
 import Profile from './Pages/Profile/Profile';
 import PrivateRoute from './Components/PrivateRoute/PrivateRoute';
-import NewItem from './Pages/NewItem/NewItem';
+import NewBookAd from './Pages/NewBookAd/NewBookAd';
+import ItemRegister from './Pages/ItemRegister/ItemRegister';
 
 function App() {
 	return (
@@ -19,7 +20,12 @@ function App() {
 				/>
 				<Route path="/anunciar" element={
 					<PrivateRoute>
-						<NewItem />
+						<NewBookAd />
+					</PrivateRoute>}
+				/>
+				<Route path="/cadastro" element={
+					<PrivateRoute>
+						<ItemRegister />
 					</PrivateRoute>}
 				/>
 			</Routes>

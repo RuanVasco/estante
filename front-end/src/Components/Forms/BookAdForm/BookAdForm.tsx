@@ -47,46 +47,21 @@ const BookAdForm = ({ initialData, onSubmit, loading = false }: Props) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className={`container-xxl ${styles.form}`}>
             <h2 className={styles.title}>
                 {initialData ? "Editar Anúncio" : "Novo Anúncio"}
             </h2>
 
-            <fieldset className={styles.fieldset}>
-                <legend>Informações do Livro</legend>
-
-                <label className={styles.label}>
-                    Título
-                    <input
-                        type="text"
-                        value={ad.book.title}
-                        onChange={e => handleBookChange("title", e.target.value)}
-                        required
-                        className={styles.input}
-                    />
-                </label>                
-
-                <label className={styles.label}>
-                    ISBN
-                    <input
-                        type="text"
-                        value={ad.book.isbn}
-                        onChange={e => handleBookChange("isbn", e.target.value)}
-                        required
-                        className={styles.input}
-                    />
-                </label>
-
-                <label className={styles.label}>
-                    Ano de publicação
-                    <input
-                        type="number"
-                        value={ad.book.publishedYear ?? ""}
-                        onChange={e => handleBookChange("publishedYear", Number(e.target.value))}
-                        className={styles.input}
-                    />
-                </label>
-            </fieldset>
+            <label className={styles.label}>
+                ISBN
+                <input
+                    type="text"
+                    value={ad.book.isbn}
+                    onChange={e => handleBookChange("isbn", e.target.value)}
+                    required
+                    className={styles.input}
+                />
+            </label>
 
             <label className={styles.label}>
                 Preço (R$)

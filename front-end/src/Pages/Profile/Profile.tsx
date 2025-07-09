@@ -2,32 +2,34 @@ import { useState } from 'react';
 import styles from './Profile.module.css';
 import Account from '../../Components/Account/Account';
 import UserItems from '../../Components/UserItems/UserItems';
+import Sidebar from '../../Components/Sidebar/Sidebar';
 
 const Profile = () => {
     const [viewType, setViewType] = useState<"account" | "items">("account");
 
+    const sidebarItems = [
+        {
+            key: "account",
+            label: "Conta",
+            active: viewType === "account",
+            onClick: () => setViewType("account"),
+        },
+        {
+            key: "items",
+            label: "Livros anunciados",
+            active: viewType === "items",
+            onClick: () => setViewType("items"),
+        },
+    ];
+
     return (
         <div className={`container-fluid ${styles.profile}`}>
             <div className="row">
-                <div className="col-3">
-                    <div className={styles.sidebar}>
-                        <h3>Menu</h3>
-                        <ul className={styles.menuList}>
-                            <li
-                                className={viewType === "account" ? styles.active : ""}
-                                onClick={() => setViewType("account")}
-                            >
-                                Conta
-                            </li>
-                            <li
-                                className={viewType === "items" ? styles.active : ""}
-                                onClick={() => setViewType("items")}
-                            >
-                                Livros anunciados
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                <Sidebar
+                    title="Menu"
+                    col={3}
+                    items={sidebarItems}
+                />
                 <div className="col">
                     {viewType === "account" && <Account />}
                     {viewType === "items" && <UserItems />}
