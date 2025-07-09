@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styles from './Profile.module.css';
 import Account from '../../Components/Account/Account';
+import UserItems from '../../Components/UserItems/UserItems';
 
 const Profile = () => {
     const [viewType, setViewType] = useState<"account" | "items">("account");
@@ -29,7 +30,7 @@ const Profile = () => {
                 </div>
                 <div className="col">
                     {viewType === "account" && <Account />}
-                    {viewType === "items" && <div><h4>Seus itens aqui</h4></div>}
+                    {viewType === "items" && <UserItems />}
                 </div>
             </div>
         </div>
