@@ -9,8 +9,14 @@ class AuthorController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-        //
+    public function index(Request $request) {
+        $query = Author::query();
+
+        if ($search = $request->query('search')) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        return response()->json($query->limit(10)->get());
     }
 
     /**

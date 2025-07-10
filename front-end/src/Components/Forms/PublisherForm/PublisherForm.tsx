@@ -1,18 +1,19 @@
 import { useState } from 'react';
-import styles from './AuthorForm.module.css';
-import type { Author } from '../../../Types/AuthorType';
+import styles from './PublisherForm.module.css';
 import { api } from '../../../Services/api';
 import { toast } from 'react-toastify';
+import type { PublisherType } from '../../../Types/PublisherType';
 
-const AuthorForm = () => {
-    const [author, setAuthor] = useState<Author>({
+const PublisherForm = () => {
+    const [publisher, setPublisher] = useState<PublisherType>({
         name: '',
+        country: ''
     });
 
     const [loading, setLoading] = useState(false);
 
-    const handleChange = <K extends keyof Author>(key: K, value: Author[K]) => {
-        setAuthor(prev => ({ ...prev, [key]: value }));
+    const handleChange = <K extends keyof PublisherType>(key: K, value: PublisherType[K]) => {
+        setPublisher(prev => ({ ...prev, [key]: value }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -20,18 +21,20 @@ const AuthorForm = () => {
         setLoading(true);
 
         try {
-            const response = await api.post('/authors', {
-                name: author.name,
+            const response = await api.post('/publishers', {
+                name: publisher.name,
+                country: publisher.country
             });
 
             if (response.status === 200 || response.status === 201) {
                 toast.success('Cadastro realizado com sucesso!');
-                setAuthor({
-                    name: ""
+                setPublisher({
+                    name: "",
+                    country: ""
                 })
             }
         } catch (err: any) {
-            const msg = err.response?.data?.message || err.message || 'Erro ao cadastrar autor.';
+            const msg = err.response?.data?.message || err.message || 'Erro ao cadastrar editora.';
             toast.error(msg);
         } finally {
             setLoading(false);
@@ -40,15 +43,28 @@ const AuthorForm = () => {
 
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
-            <h2 className={styles.title}>Cadastrar Autor</h2>
+            <h2 className={styles.title}>Cadastrar Editora</h2>
 
             <div className={styles.field}>
                 <label className={styles.label}>
                     Nome
                     <input
                         type="text"
-                        value={author.name}
+                        value={publisher.name}
                         onChange={e => handleChange('name', e.target.value)}
+                        required
+                        className={styles.input}
+                    />
+                </label>
+            </div>
+
+            <div className={styles.field}>
+                <label className={styles.label}>
+                    País
+                    <input
+                        type="text"
+                        value={publisher.country}
+                        onChange={e => handleChange('country', e.target.value)}
                         required
                         className={styles.input}
                     />
@@ -74,4 +90,4 @@ const AuthorForm = () => {
     );
 };
 
-export default AuthorForm;
+export default PublisherForm;

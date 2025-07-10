@@ -7,10 +7,12 @@ use App\Http\Controllers\BookController;
 use App\Http\Middleware\JwtAuthMiddleware;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\PublisherController;
 
 // Route::apiResource('users', UserController::class);
 Route::apiResource('books', BookController::class);
 Route::apiResource('authors', AuthorController::class);
+Route::apiResource('publishers', PublisherController::class);
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);

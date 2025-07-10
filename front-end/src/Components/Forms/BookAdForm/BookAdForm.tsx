@@ -2,6 +2,9 @@ import { useState } from 'react';
 import styles from './BookAdForm.module.css';
 import type { BookAd } from '../../../Types/BookAd';
 import type { BookCondition } from '../../../Types/BookCondition';
+import AsyncSelect from 'react-select/async';
+import { api } from '../../../Services/api';
+import type { Book } from '../../../Types/BookType';
 
 type Props = {
     initialData?: BookAd;
@@ -9,10 +12,17 @@ type Props = {
     loading?: boolean;
 };
 
+type OptionType = {
+    value: number;
+    label: string;
+};
+
 const BookAdForm = ({ initialData, onSubmit, loading = false }: Props) => {
+    const emptyBook: Book = { title: '', isbn: '', publishedYear: undefined, author: { name: "" }, publisher: { name: "", country: "" } };
+
     const [ad, setAd] = useState<BookAd>(
         initialData ?? {
-            book: { title: '', isbn: '', publishedYear: undefined },
+            book: emptyBook,
             price: 0,
             condition: 'used',
             comment: '',
@@ -26,24 +36,22 @@ const BookAdForm = ({ initialData, onSubmit, loading = false }: Props) => {
         setAd(prev => ({ ...prev, [key]: value }));
     };
 
-    const handleBookChange = <K extends keyof BookAd["book"]>(key: K, value: BookAd["book"][K]) => {
-        setAd(prev => ({
-            ...prev,
-            book: {
-                ...prev.book,
-                [key]: value,
-            },
-        }));
-    };
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!ad.book.title || !ad.book.isbn || ad.price <= 0) {
+        if (ad.book.title === "" || ad.price <= 0 || !ad.condition) {
             setError("Preencha todos os campos obrigatórios.");
             return;
         }
         setError("");
         onSubmit(ad);
+    };
+
+    const loadBooks = async (inputValue: string): Promise<OptionType[]> => {
+        const res = await api.get(`/books`, { params: { search: inputValue } });
+        return res.data.map((book: any) => ({
+            value: book.id,
+            label: `${book.title} - ${book.isbn}`,
+        }));
     };
 
     return (
@@ -53,13 +61,17 @@ const BookAdForm = ({ initialData, onSubmit, loading = false }: Props) => {
             </h2>
 
             <label className={styles.label}>
-                ISBN
-                <input
-                    type="text"
-                    value={ad.book.isbn}
-                    onChange={e => handleBookChange("isbn", e.target.value)}
-                    required
-                    className={styles.input}
+                Livro
+                <AsyncSelect
+                    cacheOptions
+                    loadOptions={loadBooks}
+                    defaultOptions
+                    onChange={(option) =>
+                        handleChange('book', option
+                            ? { id: Number(option.value), title: option.label, isbn: '', author: { name: '' }, publisher: { name: '', country: '' } }
+                            : emptyBook)
+                    }
+                    placeholder="Selecione um livro..."
                 />
             </label>
 

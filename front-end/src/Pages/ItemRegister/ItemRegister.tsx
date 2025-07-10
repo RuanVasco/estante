@@ -2,9 +2,10 @@ import { useState } from "react";
 import BookForm from "../../Components/Forms/BookForm/BookForm";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import AuthorForm from "../../Components/Forms/AuthorForm/AuthorForm";
+import PublisherForm from "../../Components/Forms/PublisherForm/PublisherForm";
 
 const NewBook = () => {
-    const [item, setItem] = useState<"book" | "author">("book");
+    const [item, setItem] = useState<"book" | "author" | "publisher">("book");
 
     const sidebarItems = [
         {
@@ -14,10 +15,16 @@ const NewBook = () => {
             onClick: () => setItem("book"),
         },
         {
-            key: "itauthorems",
+            key: "author",
             label: "Autores",
             active: item === "author",
             onClick: () => setItem("author"),
+        },
+        {
+            key: "publisher",
+            label: "Editoras",
+            active: item === "publisher",
+            onClick: () => setItem("publisher"),
         },
     ];
 
@@ -32,8 +39,10 @@ const NewBook = () => {
                 <div className="col">
                     {item === "book" ? (
                         <BookForm />
-                    ) : (
+                    ) : item === "author" ? (
                         <AuthorForm />
+                    ) : (
+                        <PublisherForm />
                     )}
                 </div>
             </div>
