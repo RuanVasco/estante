@@ -2,6 +2,7 @@ import { createContext, useState, useContext, useEffect } from "react";
 import { api } from "../Services/api";
 import { type UserType } from "../Types/UserType";
 import parseJwt from "../Services/parseJwt";
+import type { JwtPayload } from "../Types/JwtPayloadType";
 
 type AuthContextType = {
     isLoggedIn: boolean;
@@ -16,6 +17,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState<UserType | null>(null);
 
+    const defineUser = (token: string) => {
+        const payload = parseJwt(token) as JwtPayload;
+        const userObj: UserType = {
+            id: payload.sub,
+            name: payload.name,
+            email: payload.email,
+        };
+
+        setUser(userObj);
+    }
+
     useEffect(() => {
         const init = async () => {
             const token = localStorage.getItem('token');
@@ -23,12 +35,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
             try {
                 const res = await api.post('/validate');
-                if (res.data.valid) {
-                    setIsLoggedIn(true);
-                    setUser(parseJwt(token));
-                } else {
-                    logout();
-                }
+                if (!res.data.valid) return logout();
+
+                setIsLoggedIn(true);
+                defineUser(token);
             } catch {
                 logout();
             }
@@ -40,7 +50,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const login = (token: string) => {
         localStorage.setItem('token', token);
         setIsLoggedIn(true);
-        setUser(parseJwt(token));
+        defineUser(token);
     };
 
     const logout = () => {
