@@ -1,5 +1,6 @@
 import type { BookCondition } from "./BookCondition";
 import type { Book } from "./BookType";
+import type { UserType } from "./UserType";
 
 export interface BookAdType {
   id?: number;
@@ -8,4 +9,5 @@ export interface BookAdType {
   condition: BookCondition;
   comment?: string;
   cover_image_url: string | File | null;
+  user?: UserType;
 }

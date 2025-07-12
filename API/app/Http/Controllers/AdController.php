@@ -10,19 +10,46 @@ use Illuminate\Validation\Rules\File;
 
 class AdController extends Controller {
 	public function index(Request $request) {
-		$query = Ad::with('book');
+		$query = Ad::with([
+			'book',
+			'user:id,id,name'
+		]);
 
 		if ($search = $request->query('search')) {
-			$query->whereHas('book', fn($q) =>
-			$q->where('title', 'like', "%$search%"));
+			$query->whereHas('book', function ($q) use ($search) {
+				$q->where('title', 'like', "%{$search}%")
+					->orWhere('isbn',  'like', "%{$search}%")
+
+					->orWhereHas('author', function ($aq) use ($search) {
+						$aq->where('name', 'like', "%{$search}%");
+					})
+
+					->orWhereHas('publisher', function ($pq) use ($search) {
+						$pq->where('name', 'like', "%{$search}%");
+					});
+			});
 		}
 
+		if (in_array($request->condition, ['new', 'used'], true)) {
+			$query->where('condition', $request->condition);
+		}
+
+		if ($request->filled('min_price')) {
+			$query->where('price', '>=', (float) $request->min_price);
+		}
+		if ($request->filled('max_price')) {
+			$query->where('price', '<=', (float) $request->max_price);
+		}
+
+		$perPage = (int) $request->query('per_page', 15);
+		$perPage = min(max($perPage, 1), 50);
+
 		return $query->orderByDesc('created_at')
-			->paginate(15);
+			->paginate($perPage);
 	}
 
 	public function indexByUser(int $userId) {
-		$ads = Ad::with('book')
+		$ads = Ad::with(['book', 'user:id,name'])
 			->where('user_id', $userId)
 			->orderByDesc('created_at')
 			->paginate(15);

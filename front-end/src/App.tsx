@@ -27,6 +27,8 @@ function App() {
                         <ItemRegister />
                     </PrivateRoute>}
                 />
+
+                <Route path="/chat/*" element={"Aqui vai o chat"} />
             </Routes>
         </Router>
     )

@@ -2,16 +2,32 @@ import { useEffect, useState } from 'react';
 import { api } from '../../Services/api';
 import type { BookAdType } from '../../Types/BookAdType';
 import { toast } from 'react-toastify';
-import { Spinner, Pagination, Card } from 'react-bootstrap';
+import { Spinner, Pagination, Card, Form, Button } from 'react-bootstrap';
 import styles from './Home.module.css';
+import { Link } from 'react-router-dom';
 
 const PER_PAGE = 9;
+
+type Filters = {
+    search: string;
+    condition: 'all' | 'new' | 'used';
+    minPrice: string;
+    maxPrice: string;
+};
+
+const defaultFilters: Filters = {
+    search: '',
+    condition: 'all',
+    minPrice: '',
+    maxPrice: '',
+};
 
 const Home = () => {
     const [ads, setAds] = useState<BookAdType[]>([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [filters, setFilters] = useState<Filters>(defaultFilters);
 
     useEffect(() => {
         const fetchAds = async () => {
@@ -22,17 +38,17 @@ const Home = () => {
                         page,
                         per_page: PER_PAGE,
                         sort: 'created_at_desc',
+                        search: filters.search || undefined,
+                        condition: filters.condition !== 'all' ? filters.condition : undefined,
+                        min_price: filters.minPrice || undefined,
+                        max_price: filters.maxPrice || undefined,
                     },
                 });
 
                 if (res.status === 200) {
                     setAds(res.data.data);
-
                     const total =
-                        Number(res.headers['x-total-count']) ||
-                        res.data.meta?.total ||
-                        0;
-
+                        Number(res.headers['x-total-count']) || res.data.meta?.total || 0;
                     setTotalPages(Math.max(1, Math.ceil(total / PER_PAGE)));
                 }
             } catch {
@@ -42,15 +58,81 @@ const Home = () => {
         };
 
         fetchAds();
-    }, [page]);
+    }, [page, filters]);
+
+    const updateFilter = <K extends keyof Filters,>(k: K, v: Filters[K]) =>
+        setFilters(prev => ({ ...prev, [k]: v }));
+
+    const clearFilters = () => setFilters(defaultFilters);
 
     const changePage = (value: number) => setPage(value);
 
     return (
-        <div className={`container-fluid ${styles.home}`}>
-            <div className="row pe-2">
-                <aside className="col-12 col-md-2 mb-4">
-                    <h3 className={styles.sidebarTitle}>Filtros</h3>
+        <div className={`container-fluid`}>
+            <div className="row">
+                <aside className="col-12 col-md-3 col-lg-2 mb-4">
+                    <h2 className={styles.title}>Filtros</h2>
+
+                    <Form className={styles.sidebar}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Busca</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Título, autor, ISBN…"
+                                value={filters.search}
+                                onChange={e => updateFilter('search', e.target.value)}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Condição</Form.Label>
+                            <Form.Select
+                                value={filters.condition}
+                                onChange={e =>
+                                    updateFilter('condition', e.target.value as Filters['condition'])
+                                }
+                            >
+                                <option value="all">Todas</option>
+                                <option value="new">Novo</option>
+                                <option value="used">Usado</option>
+                            </Form.Select>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Preço (R$)</Form.Label>
+                            <div className="d-flex gap-2">
+                                <Form.Control
+                                    type="number"
+                                    min={0}
+                                    placeholder="mín."
+                                    value={filters.minPrice}
+                                    onChange={e => updateFilter('minPrice', e.target.value)}
+                                />
+                                <Form.Control
+                                    type="number"
+                                    min={0}
+                                    placeholder="máx."
+                                    value={filters.maxPrice}
+                                    onChange={e => updateFilter('maxPrice', e.target.value)}
+                                />
+                            </div>
+                        </Form.Group>
+
+                        <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            className="w-100"
+                            onClick={clearFilters}
+                            disabled={
+                                !filters.search &&
+                                filters.condition === 'all' &&
+                                !filters.minPrice &&
+                                !filters.maxPrice
+                            }
+                        >
+                            Limpar filtros
+                        </Button>
+                    </Form>
                 </aside>
 
                 <main className="col">
@@ -68,39 +150,51 @@ const Home = () => {
                             <div className="row g-4">
                                 {ads.map(ad => (
                                     <div key={ad.id} className="col-12 col-md-6 col-lg-4 d-flex">
-                                        <Card className={`${styles.card} w-100 h-100 flex-fill`}>
-                                            {ad.cover_image_url && (
-                                                <Card.Img
-                                                    variant="top"
-                                                    src={
-                                                        ad.cover_image_url && typeof ad.cover_image_url === 'string'
-                                                            ? ad.cover_image_url
-                                                            : '/img/no-cover.svg'
-                                                    }
+                                        <Card className={`${styles.cardRow} w-100 flex-fill`}>
+                                            <div className="d-flex gap-3">
+                                                <img
+                                                    src={typeof ad.cover_image_url === 'string'
+                                                        ? ad.cover_image_url
+                                                        : '/img/no-cover.svg'}
                                                     alt={ad.book.title}
+                                                    className={styles.thumbSq}
                                                 />
-                                            )}
 
-                                            <Card.Body className="d-flex flex-column">
-                                                <Card.Title className={styles.cardTitle}>{ad.book.title}</Card.Title>
+                                                <div className={`${styles.bodyRow}`}>
+                                                    <h5 className={styles.cardTitle}>{ad.book.title}</h5>
 
-                                                {ad.comment && (
-                                                    <Card.Text className={`${styles.comment} mb-3`}>
-                                                        {ad.comment}
-                                                    </Card.Text>
-                                                )}
+                                                    {ad.condition && (
+                                                        <p className={`${styles.condition} mb-2 flex-grow-0`}>
+                                                            {ad.condition === 'new' ? 'Novo' : 'Usado'}
+                                                        </p>
+                                                    )}
 
-                                                <div className="mt-auto">
-                                                    <span className={styles.price}>R$ {ad.price.toFixed(2)}</span>
+                                                    {ad.comment && (
+                                                        <p className={`${styles.comment} mb-2 flex-grow-0`}>
+                                                            {ad.comment}
+                                                        </p>
+                                                    )}
+
+                                                    <div className="mt-auto">
+                                                        <span className={styles.price}>R$ {ad.price.toFixed(2)}</span>
+                                                    </div>
                                                 </div>
-                                            </Card.Body>
+
+                                                {ad.user && (
+                                                    <div className="d-flex flex-column gap-2 ms-auto">
+                                                        Por: <span className={styles.user}>{ad.user.name}</span>
+                                                        <Link className={styles.chatBtn} to={`/chat/${ad.user.id}`}>
+                                                            Conversar
+                                                        </Link>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </Card>
                                     </div>
                                 ))}
                             </div>
 
 
-                            {/* Paginação */}
                             {totalPages > 1 && (
                                 <div className="d-flex justify-content-center mt-4">
                                     <Pagination>

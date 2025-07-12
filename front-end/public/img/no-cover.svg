@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="250" height="350" viewBox="0 0 250 350" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .outline { fill: none; stroke: #c9c9c9; stroke-width: 8; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <!-- Left page -->
+  <path class="outline"
+        d="M30 300
+           L30 80
+           Q90 60 120 100
+           L120 300
+           Q90 260 30 300
+           Z"/>
+
+  <!-- Right page -->
+  <path class="outline"
+        d="M220 300
+           Q160 260 130 300
+           L130 100
+           Q160 60 220 80
+           L220 300
+           Z"/>
+</svg>
