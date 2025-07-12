@@ -76,7 +76,7 @@ const UserItems = () => {
     };
 
     const handleSubmit = () => {
-        setShow(false);
+        handleHide();
         fetchAds();
     }
 

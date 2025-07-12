@@ -1,0 +1,48 @@
+@import "../../Styles/variables.css";
+
+.home {
+  padding-block: 2rem;
+  background: var(--color-white);
+}
+
+.sidebarTitle {
+  font-family: var(--font-serif);
+  color: var(--color-dark);
+  margin-bottom: 1rem;
+}
+
+.card {
+  height: 100%;
+  border: 1px solid var(--color-primary-dark);
+  border-radius: 0.5rem;
+  transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cardTitle {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-dark);
+}
+
+.comment {
+  font-size: 0.9rem;
+  color: #666;
+  min-height: 3rem;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+.title {
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}

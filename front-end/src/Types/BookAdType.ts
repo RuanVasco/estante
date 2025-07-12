@@ -7,5 +7,5 @@ export interface BookAdType {
   price: number;
   condition: BookCondition;
   comment?: string;
-  coverImage?: File | null;
+  cover_image_url: string | File | null;
 }

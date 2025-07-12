@@ -17,7 +17,7 @@ const emptyAd: BookAdType = {
     price: 0,
     condition: 'used',
     comment: '',
-    coverImage: null,
+    cover_image_url: null,
 };
 
 export default function BookAdModal({ onSuccess, mode = 'create', adId = null }: Props) {
@@ -25,7 +25,39 @@ export default function BookAdModal({ onSuccess, mode = 'create', adId = null }:
     const [loadingAd, setLoadingAd] = useState(false);
     const [ad, setAd] = useState<BookAdType>(emptyAd);
 
-    /* --- se estiver em edição, buscar anúncio ---------------- */
+    const buildRequest = (src: BookAdType, edit: boolean, id?: number) => {
+        const isMultipart = src.cover_image_url instanceof File;
+        const fd = isMultipart ? new FormData() : null;
+
+        const base = {
+            book_id: src.book.id,
+            price: src.price,
+            condition: src.condition.toLowerCase(),
+            comment: src.comment ?? '',
+        };
+
+        if (isMultipart && fd) {
+            Object.entries(base).forEach(([k, v]) => fd.append(k, String(v)));
+            fd.append('cover_image', src.cover_image_url as File);
+
+            if (edit) fd.append('_method', 'PUT');
+
+            return {
+                url: edit ? `/ads/${id}` : '/ads',
+                method: edit && isMultipart ? 'post' : 'post',
+                data: fd,
+                headers: { 'Content-Type': undefined },
+            };
+        }
+
+        return {
+            url: edit ? `/ads/${id}` : '/ads',
+            method: edit ? 'put' : 'post',
+            data: base,
+            headers: undefined,
+        };
+    };
+
     useEffect(() => {
         if (mode === 'edit' && adId) fetchAd(adId);
     }, [mode, adId]);
@@ -44,18 +76,10 @@ export default function BookAdModal({ onSuccess, mode = 'create', adId = null }:
     const handleSubmit = async (formData: BookAdType) => {
         setLoading(true);
 
+        const { url, method, data, headers } = buildRequest(formData, mode === 'edit', adId ?? undefined);
+
         try {
-            const payload = {
-                book_id: formData.book.id,
-                price: formData.price,
-                condition: formData.condition.toLowerCase() as 'new' | 'used',
-                comment: formData.comment ?? '',
-            };
-
-            const url = mode === 'edit' && adId ? `/ads/${adId}` : '/ads';
-            const verb = mode === 'edit' ? api.put : api.post;
-
-            const res = await verb(url, payload);
+            const res = await api.request({ url, method, data, headers });
 
             if (res.status === 200 || res.status === 201) {
                 toast.success(mode === 'edit' ? 'Anúncio atualizado!' : 'Anúncio criado!');

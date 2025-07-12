@@ -22,17 +22,19 @@ export default function BookAdForm({ initialData, onSubmit, loading = false }: P
             price: 0,
             condition: 'used',
             comment: '',
-            coverImage: null,
+            cover_image_url: null,
         }
     );
     const [error, setError] = useState('');
 
-    /* popular em modo edição */
+    const [preview, setPreview] = useState<string | null>(
+        typeof ad.cover_image_url === 'string' ? ad.cover_image_url : null
+    );
+
     useEffect(() => {
         if (initialData) setAd(initialData);
     }, [initialData]);
 
-    /* helpers --------------------------------------------------- */
     const handleChange = <K extends keyof BookAdType>(key: K, val: BookAdType[K]) =>
         setAd((prev) => ({ ...prev, [key]: val }));
 
@@ -44,7 +46,6 @@ export default function BookAdForm({ initialData, onSubmit, loading = false }: P
         }));
     };
 
-    /* submit ----------------------------------------------------- */
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!ad.book.id || ad.price <= 0) return setError('Preencha todos os campos obrigatórios.');
@@ -52,10 +53,8 @@ export default function BookAdForm({ initialData, onSubmit, loading = false }: P
         onSubmit(ad);
     };
 
-    /* form ------------------------------------------------------- */
     return (
         <form onSubmit={submit} className={`container-xxl ${styles.form}`}>
-            {/* livro -------------------------------------------------- */}
             <label className={styles.label}>
                 Livro
                 <AsyncSelect
@@ -75,7 +74,6 @@ export default function BookAdForm({ initialData, onSubmit, loading = false }: P
                 />
             </label>
 
-            {/* preço -------------------------------------------------- */}
             <label className={styles.label}>
                 Preço (R$)
                 <input
@@ -88,7 +86,6 @@ export default function BookAdForm({ initialData, onSubmit, loading = false }: P
                 />
             </label>
 
-            {/* condição ---------------------------------------------- */}
             <label className={styles.label}>
                 Condição
                 <select
@@ -101,7 +98,6 @@ export default function BookAdForm({ initialData, onSubmit, loading = false }: P
                 </select>
             </label>
 
-            {/* comentário -------------------------------------------- */}
             <label className={styles.label}>
                 Comentário
                 <textarea
@@ -112,15 +108,21 @@ export default function BookAdForm({ initialData, onSubmit, loading = false }: P
                 />
             </label>
 
-            {/* capa --------------------------------------------------- */}
             <label className={styles.label}>
                 Imagem da capa
                 <input
                     type="file"
                     accept="image/*"
                     className={styles.input}
-                    onChange={(e) => handleChange('coverImage', e.target.files?.[0] || null)}
+                    onChange={e => {
+                        const file = e.target.files?.[0] ?? null;
+                        handleChange('cover_image_url', file);
+                        if (file) setPreview(URL.createObjectURL(file));
+                    }}
                 />
+                {preview && (
+                    <img src={preview} alt="Capa" className={styles.coverThumb} />
+                )}
             </label>
 
             {error && <p className={styles.error}>{error}</p>}

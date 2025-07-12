@@ -1,3 +1,5 @@
+@import "../../Styles/variables.css";
+
 .header {
   position: sticky;
   top: 0;
@@ -33,16 +35,17 @@
 .links {
   display: flex;
   gap: 1.25rem;
+  margin-right: 1.7rem;
 }
 
 .links a {
   text-decoration: none;
-  color: #333;
+  color: var(--color-dark);
   font-weight: 500;
 }
 
 .links a:hover {
-  color: #e8754d;
+  color: var(--color-primary);
 }
 
 .iconButton {
