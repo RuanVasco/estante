@@ -1,7 +1,7 @@
 import type { BookCondition } from "./BookCondition";
 import type { Book } from "./BookType";
 
-export interface BookAd {
+export interface BookAdType {
   id?: number;
   book: Book;
   price: number;

@@ -1,9 +1,63 @@
 .header {
-	/* position: fixed;
-	top: 0;
-	left: 0; */
-	z-index: 1000;
-	width: 100%;
-	padding: 15px 0;
-	margin-bottom: 1rem;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 0.75rem 0;
+  margin-bottom: 10px;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+.links {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.links a:hover {
+  color: #e8754d;
+}
+
+.iconButton {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .links {
+    display: none;
+  }
+
+  .left {
+    flex: 1;
+  }
 }
