@@ -111,7 +111,7 @@ const UserItems = () => {
                                 <div>
                                     <h4>{ad.book.title}</h4>
                                     <p>{ad.comment}</p>
-                                    <span>R$ {ad.price.toFixed(2)}</span>
+                                    <span>R$ {ad.price}</span>
                                 </div>
                                 <div className={styles.actions}>
                                     <button onClick={() => handleEdit(ad.id ?? null)}>Editar</button>

@@ -176,7 +176,7 @@ const Home = () => {
                                                     )}
 
                                                     <div className="mt-auto">
-                                                        <span className={styles.price}>R$ {ad.price.toFixed(2)}</span>
+                                                        <span className={styles.price}>R$ {ad.price}</span>
                                                     </div>
                                                 </div>
 

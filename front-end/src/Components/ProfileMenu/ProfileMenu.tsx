@@ -17,7 +17,7 @@ const ProfileMenu = () => {
                     <ul className={styles.loggedInMenu}>
                         <li><Link to="/perfil">Meu Perfil</Link></li>
                         <li><Link to="/cadastro">Solicitar cadastro</Link></li>
-                        <li><Link to="/configuracoes">Configurações</Link></li>
+                        {/* <li><Link to="/configuracoes">Configurações</Link></li> */}
                         <li><Link to="/ajuda">Ajuda</Link></li>
                     </ul>
                     <button className={styles.logoutButton} onClick={logout}>Sair</button>
