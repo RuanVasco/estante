@@ -4,8 +4,12 @@ import Account from '../../Components/Account/Account';
 import UserItems from '../../Components/UserItems/UserItems';
 import Sidebar from '../../Components/Sidebar/Sidebar';
 
-const Profile = () => {
-    const [viewType, setViewType] = useState<"account" | "items">("account");
+interface props {
+    initialView?: "account" | "items";
+}
+
+const Profile = ({ initialView = "account" }: props) => {
+    const [viewType, setViewType] = useState<"account" | "items">(initialView);
 
     const sidebarItems = [
         {

@@ -9,90 +9,127 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 
 class AdController extends Controller {
-    public function index(Request $request) {
-        $query = Ad::with('book');
+	public function index(Request $request) {
+		$query = Ad::with([
+			'book',
+			'user:id,id,name'
+		]);
 
-        if ($search = $request->query('search')) {
-            $query->whereHas('book', fn($q) =>
-            $q->where('title', 'like', "%$search%"));
-        }
+		if ($search = $request->query('search')) {
+			$query->whereHas('book', function ($q) use ($search) {
+				$q->where('title', 'like', "%{$search}%")
+					->orWhere('isbn',  'like', "%{$search}%")
 
-        return $query->orderByDesc('created_at')
-            ->paginate(15);
-    }
+					->orWhereHas('author', function ($aq) use ($search) {
+						$aq->where('name', 'like', "%{$search}%");
+					})
 
-    public function indexByUser(int $userId) {
-        $ads = Ad::with('book')
-            ->where('user_id', $userId)
-            ->orderByDesc('created_at')
-            ->paginate(15);
+					->orWhereHas('publisher', function ($pq) use ($search) {
+						$pq->where('name', 'like', "%{$search}%");
+					});
+			});
+		}
 
-        return response()->json($ads);
-    }
+		if (in_array($request->condition, ['new', 'used'], true)) {
+			$query->where('condition', $request->condition);
+		}
 
-    public function store(Request $request) {
-        logger('debug condition:', [$request->input('condition')]);
+		if ($request->filled('min_price')) {
+			$query->where('price', '>=', (float) $request->min_price);
+		}
+		if ($request->filled('max_price')) {
+			$query->where('price', '<=', (float) $request->max_price);
+		}
 
-        $validated = $request->validate([
-            'book_id'     => 'required|exists:books,id',
-            'price'       => 'required|numeric|min:0.01',
-            'condition'   => ['required', Rule::enum(BookCondition::class)],
-            'comment'     => 'nullable|string|max:1000',
-            'cover_image' => [
-                'nullable',
-                File::image()->max(3_000),
-            ],
-        ]);
+		$perPage = (int) $request->query('per_page', 15);
+		$perPage = min(max($perPage, 1), 50);
 
-        $validated['user_id'] = $request->user()->id;
+		return $query->orderByDesc('created_at')
+			->paginate($perPage);
+	}
 
-        if ($request->file('cover_image')) {
-            $path = $request->file('cover_image')
-                ->store('covers', 'public');
-            $validated['cover_image'] = $path;
-        }
+	public function indexByUser(int $userId) {
+		$ads = Ad::with(['book', 'user:id,name'])
+			->where('user_id', $userId)
+			->orderByDesc('created_at')
+			->paginate(15);
 
-        $ad = Ad::create($validated);
+		return response()->json($ads);
+	}
 
-        return response()->json($ad->load(['book', 'user']), 201);
-    }
+	public function store(Request $request) {
+		logger('debug condition:', [$request->input('condition')]);
 
-    public function show(Ad $ad) {
-        return $ad->load('book');
-    }
+		$validated = $request->validate([
+			'book_id'     => 'required|exists:books,id',
+			'price'       => 'required|numeric|min:0.01',
+			'condition'   => ['required', Rule::enum(BookCondition::class)],
+			'comment'     => 'nullable|string|max:1000',
+			'cover_image' => [
+				'nullable',
+				File::image()->max(3_000),
+			],
+		]);
 
-    public function update(Request $request, Ad $ad) {
-        $validated = $request->validate([
-            'price'       => 'sometimes|numeric|min:0.01',
-            'condition'   => ['required', Rule::enum(BookCondition::class)],
-            'comment'     => 'nullable|string|max:1000',
-            'cover_image' => [
-                'nullable',
-                File::image()->max(3_000),
-            ],
-        ]);
+		$validated['user_id'] = $request->user()->id;
 
-        if ($request->file('cover_image')) {
-            $path = $request->file('cover_image')
-                ->store('covers', 'public');
-            $validated['cover_image'] = $path;
-        }
+		if ($request->file('cover_image')) {
+			$path = $request->file('cover_image')
+				->store('covers', 'public');
+			$validated['cover_image'] = $path;
+		}
 
-        $ad->update($validated);
+		$ad = Ad::create($validated);
 
-        return $ad->load('book');
-    }
+		return response()->json($ad->load(['book', 'user']), 201);
+	}
 
-    public function destroy(Ad $ad) {
-        $ad->delete();
-        return response()->noContent();
-    }
+	public function show(Ad $ad) {
+		return $ad->load('book');
+	}
 
-    public function create() {
-        return response()->json(['message' => 'Not implemented'], 501);
-    }
+	public function update(Request $request, Ad $ad) {
+		$validated = $request->validate([
+			'price'       => 'sometimes|numeric|min:0.01',
+			'condition'   => ['required', Rule::enum(BookCondition::class)],
+			'comment'     => 'nullable|string|max:1000',
+			'cover_image' => [
+				'nullable',
+				File::image()->max(3_000),
+			],
+		]);
 
-    public function edit(Ad $ad) {
-        return response()->json(['message' => 'Not implemented'], 501);
-    }
+		if ($request->file('cover_image')) {
+			$path = $request->file('cover_image')
+				->store('covers', 'public');
+			$validated['cover_image'] = $path;
+		}
+
+		$ad->update($validated);
+
+		return $ad->load('book');
+	}
+
+	public function destroy(Request $request, int $id) {
+		$userId = $request->user()->id;
+
+		$ad = Ad::where('id', $id)
+			->where('user_id', $userId)
+			->first();
+
+		if (! $ad) {
+			return response()->json(['message' => 'Anúncio não encontrado'], 404);
+		}
+
+		$ad->delete();
+		return response()->noContent();
+	}
+
+	public function create() {
+		return response()->json(['message' => 'Not implemented'], 501);
+	}
+
+	public function edit(Ad $ad) {
+		return response()->json(['message' => 'Not implemented'], 501);
+	}
 }

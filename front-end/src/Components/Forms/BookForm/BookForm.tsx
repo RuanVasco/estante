@@ -23,6 +23,7 @@ const BookForm = () => {
         author: emptyAuthor,
         publisher: emptyPublisher
     });
+    const [loading, setLoading] = useState(false);
 
     const loadAuthors = async (inputValue: string): Promise<OptionType[]> => {
         const res = await api.get(`/authors`, { params: { search: inputValue } });
@@ -76,6 +77,8 @@ const BookForm = () => {
         };
 
         try {
+            setLoading(true);
+
             const response = await api.post('/books', payload);
 
             if (response.status != 200 && response.status != 201) {
@@ -83,10 +86,18 @@ const BookForm = () => {
                 return;
             }
 
+            setBook({
+                title: '',
+                isbn: '',
+                publishedYear: undefined,
+                author: emptyAuthor,
+                publisher: emptyPublisher
+            });
             toast.success("Livro cadastrado com sucesso!");
-
         } catch (error) {
             toast.error("Erro ao salvar o livro.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -164,8 +175,8 @@ const BookForm = () => {
                 </label>
             </div>
 
-            <button type="submit" className={styles.button}>
-                Enviar
+            <button type="submit" className={styles.button} disabled={loading}>
+                {loading ? 'Cadastrando...' : 'Cadastrar'}
             </button>
         </form>
     );

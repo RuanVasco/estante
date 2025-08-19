@@ -1,56 +1,57 @@
 .menu {
-    position: absolute;
-    top: 110%;
-    right: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    z-index: 999;
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  z-index: 999;
+  min-width: 20vw;
 }
 
 .link {
-    margin-top: 1rem;
-    font-size: 0.9rem;
+  margin-top: 1rem;
+  font-size: 0.9rem;
 }
 
 .toggleButton {
-    background: none;
-    border: none;
-    color: var(--color-primary);
-    text-decoration: underline;
-    cursor: pointer;
-    font-weight: bold;
-    padding: 0;
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0;
 }
 
 .name {
-    font-weight: 500;
-    font-size: 1.1rem;
+  font-weight: 500;
+  font-size: 1.1rem;
 }
 
 .loggedInMenu {
-    margin: 1em 0;
-    padding: 0;
-    list-style: none;
+  margin: 1em 0;
+  padding: 0;
+  list-style: none;
 }
 
 .loggedInMenu > li > a {
-    color: var(--color-primary);
-    text-decoration: none;
+  color: var(--color-primary);
+  text-decoration: none;
 }
 
 .logoutButton {
-    width: 100%;
-    padding: 0.5rem;
-    background-color: var(--color-primary);
-    font-weight: 600;
-    color: var(--color-dark);
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: filter 0.2s ease;
+  width: 100%;
+  padding: 0.5rem;
+  background-color: var(--color-primary);
+  font-weight: 600;
+  color: var(--color-dark);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: filter 0.2s ease;
 }
 
 .logoutButton:hover {
